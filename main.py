@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, \
                   request, make_response, session, abort
-from data import db_session
+from data import db_session, news_api
 from data.user import User
 from data.news import News
 from forms.user import RegisterForm
@@ -171,6 +171,7 @@ def add_users():
 
 def main():
     db_session.global_init("db/blogs.db")
+    app.register_blueprint(news_api.blueprint)
     app.run()
     # for user in db_sess.query(User).filter((User.id > 4) | (User.email.notilike("%1%"))):
     #     print(user)
