@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, \
-                  request, make_response, session, abort
+                  request, make_response, session, abort, request
 from data import db_session, news_api
 from data.user import User
 from data.news import News
@@ -18,6 +18,10 @@ login_manager.init_app(app)
 def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 @app.route("/cookie_test")
 def cookie_test():
