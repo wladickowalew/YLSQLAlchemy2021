@@ -1,4 +1,5 @@
 import datetime
+import os
 from data import news_resources
 from flask import Flask, render_template, redirect, \
                   request, make_response, session, abort, request
@@ -182,9 +183,10 @@ def add_users():
         db_sess.commit()
 
 def main():
+    port = int(os.environ.get("PORT", 5000))
     db_session.global_init("db/blogs.db")
     app.register_blueprint(news_api.blueprint)
-    app.run()
+    app.run(host='0.0.0.0', port=port)
     # for user in db_sess.query(User).filter((User.id > 4) | (User.email.notilike("%1%"))):
     #     print(user)
 
