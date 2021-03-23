@@ -1,3 +1,5 @@
+import datetime
+from data import news_resources
 from flask import Flask, render_template, redirect, \
                   request, make_response, session, abort, request
 from data import db_session, news_api
@@ -7,10 +9,16 @@ from forms.user import RegisterForm
 from forms.login import LoginForm
 from forms.news import NewsForm
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-import datetime
+from flask_restful import reqparse, abort, Api, Resource
 
 app = Flask(__name__)
+
+api = Api(app)
+api.add_resource(news_resources.NewsListResource, '/api/v2/news') 
+api.add_resource(news_resources.NewsResource, '/api/v2/news/<int:news_id>')
+
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -19,9 +27,9 @@ def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
 
-@app.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
+# @app.errorhandler(404)
+# def not_found(error):
+#     return make_response(jsonify({'error': 'Not found'}), 404)
 
 @app.route("/cookie_test")
 def cookie_test():
